@@ -11,7 +11,7 @@ DMG_PATH    = $(BUILD_DIR)/$(APP_NAME)-v$(VERSION).dmg
 
 DERIVED_DATA_APP = $(HOME)/Library/Developer/Xcode/DerivedData/$(APP_NAME)-*/Build/Products
 
-.PHONY: generate build test release dmg clean
+.PHONY: generate build test lint release dmg clean
 
 generate:
 	xcodegen generate --spec project.yml
@@ -22,6 +22,9 @@ build: generate
 		build CODE_SIGNING_ALLOWED=NO
 	mkdir -p $(BUILD_DIR)
 	cp -R $(DERIVED_DATA_APP)/Debug/$(APP_NAME).app $(BUILD_DIR)/
+
+lint:
+	swiftlint lint --strict
 
 test: generate
 	xcodebuild -scheme $(SCHEME) \

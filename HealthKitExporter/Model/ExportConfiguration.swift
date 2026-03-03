@@ -1,8 +1,8 @@
 import Foundation
 
 enum ExportMode: String, CaseIterable, Codable, Sendable {
-    case http = "http"
-    case file = "file"
+    case http
+    case file
 }
 
 enum ExportInterval: Int, CaseIterable, Codable, Sendable {
