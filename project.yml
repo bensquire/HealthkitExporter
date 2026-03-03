@@ -1,0 +1,85 @@
+name: HealthKitExporter
+options:
+  bundleIdPrefix: com.bengsfort
+  deploymentTarget:
+    macOS: "13.0"
+  xcodeVersion: "16.0"
+  defaultConfig: Debug
+  createIntermediateGroups: true
+
+settings:
+  base:
+    PRODUCT_NAME: HealthKitExporter
+    SWIFT_VERSION: "6.0"
+    ENABLE_HARDENED_RUNTIME: YES
+    CODE_SIGN_STYLE: Automatic
+    MACOSX_DEPLOYMENT_TARGET: "13.0"
+
+schemes:
+  HealthKitExporter:
+    build:
+      targets:
+        HealthKitExporter: [run, archive, profile]
+        HealthKitExporterTests: [test, analyze]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - HealthKitExporterTests
+    archive:
+      config: Release
+
+targets:
+  HealthKitExporter:
+    type: application
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: HealthKitExporter
+        excludes:
+          - "*.entitlements"
+    entitlements:
+      path: HealthKitExporter/HealthKitExporter.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+        com.apple.security.files.user-selected.read-write: true
+    info:
+      path: HealthKitExporter/Info.plist
+      properties:
+        CFBundleName: HealthKitExporter
+        CFBundleDisplayName: HealthKit Exporter
+        CFBundleShortVersionString: "1.0.0"
+        CFBundleVersion: "1"
+        LSMinimumSystemVersion: "13.0"
+        NSHealthShareUsageDescription: "HealthKit Exporter reads your step count and flights climbed to export health data."
+        NSHealthUpdateUsageDescription: "HealthKit Exporter does not write health data."
+        NSPrincipalClass: NSApplication
+        LSUIElement: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.bengsfort.HealthKitExporter
+        INFOPLIST_FILE: HealthKitExporter/Info.plist
+        CODE_SIGN_ENTITLEMENTS: HealthKitExporter/HealthKitExporter.entitlements
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
+    dependencies:
+      - sdk: HealthKit.framework
+
+  HealthKitExporterTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: HealthKitExporterTests
+      - path: HealthKitExporter
+        excludes:
+          - "*.entitlements"
+          - "App/HealthKitExporterApp.swift"
+    dependencies:
+      - sdk: HealthKit.framework
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.bengsfort.HealthKitExporterTests
+        SWIFT_VERSION: "6.0"
