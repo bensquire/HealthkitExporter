@@ -1,0 +1,81 @@
+name: FitnessExporter
+options:
+  bundleIdPrefix: com.bengsfort
+  deploymentTarget:
+    iOS: "18.0"
+  xcodeVersion: "16.0"
+  defaultConfig: Debug
+  createIntermediateGroups: true
+
+settings:
+  base:
+    PRODUCT_NAME: FitnessExporter
+    SWIFT_VERSION: "6.0"
+    CODE_SIGN_STYLE: Automatic
+
+schemes:
+  FitnessExporter:
+    build:
+      targets:
+        FitnessExporter: [run, archive, profile]
+        FitnessExporterTests: [test, analyze]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - FitnessExporterTests
+    archive:
+      config: Release
+
+targets:
+  FitnessExporter:
+    type: application
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: FitnessExporter
+        excludes:
+          - "*.entitlements"
+    entitlements:
+      path: FitnessExporter/FitnessExporter.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.access: []
+    info:
+      path: FitnessExporter/Info.plist
+      properties:
+        CFBundleName: FitnessExporter
+        CFBundleDisplayName: Fitness Exporter
+        CFBundleShortVersionString: "1.0.0"
+        CFBundleVersion: "1"
+        NSHealthShareUsageDescription: "Fitness Exporter reads your step count and flights climbed to export health data."
+        NSHealthUpdateUsageDescription: "Fitness Exporter does not write health data."
+        UIFileSharingEnabled: true
+        LSSupportsOpeningDocumentsInPlace: true
+        UILaunchScreen: {}
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.bengsfort.FitnessExporter
+        INFOPLIST_FILE: FitnessExporter/Info.plist
+        CODE_SIGN_ENTITLEMENTS: FitnessExporter/FitnessExporter.entitlements
+        TARGETED_DEVICE_FAMILY: "1"
+    dependencies:
+      - sdk: HealthKit.framework
+
+  FitnessExporterTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: FitnessExporterTests
+      - path: FitnessExporter
+        excludes:
+          - "*.entitlements"
+          - "App/FitnessExporterApp.swift"
+    dependencies:
+      - sdk: HealthKit.framework
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.bengsfort.FitnessExporterTests
+        SWIFT_VERSION: "6.0"
